@@ -8,7 +8,8 @@
       "Bash(grep -r \"asyncstorage\\\\|shared_storage\\\\|maven\" D:/Newnop/Trace/node_modules/@react-native-async-storage/async-storage/android/ --include=\"*.gradle\" --include=\"*.md\" -l 2>/dev/null | head -5)",
       "Bash(cd D:/Newnop/Trace && npm install @react-native-async-storage/async-storage@^2.0.0 2>&1)",
       "PowerShell(cd D:\\\\Newnop\\\\Trace; npx tsc --noEmit 2>&1 | Where-Object { $_ -match \"components/common\" })",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "PowerShell(Set-Content *)"
     ]
   }
 }
