@@ -77,3 +77,5 @@ yarn-error.log
 
 TRACE_IMPLEMENTATION_PLAN.md
 
+# Ignore design directory
+src/design/
