@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell.exe -Command \"Set-Location 'D:\\\\Newnop\\\\Trace'; npx react-native run-android --verbose\" 2>&1)",
+      "Bash(powershell.exe -Command \"Set-Location 'D:\\\\Newnop\\\\Trace\\\\android'; .\\\\gradlew.bat app:installDebug -PreactNativeDevServerPort=8081\" 2>&1)",
+      "Bash(printf 'sdk.dir=C:/Users/Ashen/AppData/Local/Android/Sdk\\\\n' > D:/Newnop/Trace/android/local.properties && cat D:/Newnop/Trace/android/local.properties)",
+      "Bash(powershell.exe -Command \"Set-Location 'D:\\\\Newnop\\\\Trace\\\\android'; .\\\\gradlew.bat app:installDebug -PreactNativeDevServerPort=8081 --stacktrace\" 2>&1)",
+      "Bash(grep -r \"asyncstorage\\\\|shared_storage\\\\|maven\" D:/Newnop/Trace/node_modules/@react-native-async-storage/async-storage/android/ --include=\"*.gradle\" --include=\"*.md\" -l 2>/dev/null | head -5)",
+      "Bash(cd D:/Newnop/Trace && npm install @react-native-async-storage/async-storage@^2.0.0 2>&1)"
+    ]
+  }
+}
