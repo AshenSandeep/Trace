@@ -1,5 +1,6 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
+import { OfflineBanner } from '../components/common/OfflineBanner';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -52,7 +53,9 @@ const MainNavigator = () => {
   const { colors, spacing } = useTheme();
 
   return (
-    <Tab.Navigator
+    <View style={{ flex: 1 }}>
+      <OfflineBanner />
+      <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
@@ -102,6 +105,7 @@ const MainNavigator = () => {
         options={{ title: 'Profile' }}
       />
     </Tab.Navigator>
+    </View>
   );
 };
 

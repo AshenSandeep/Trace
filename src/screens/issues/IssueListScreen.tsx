@@ -65,6 +65,8 @@ const IssueListScreen = () => {
     isLoading,
     isRefreshing,
     error,
+    syncQueue,
+    isOnline,
     fetchIssues,
     setFilters,
     clearFilters,
@@ -85,14 +87,28 @@ const IssueListScreen = () => {
     load();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const queueMap = useMemo(() => {
+    const m = new Map<string, 'create' | 'update'>();
+    syncQueue.forEach(q => m.set(q.id, q.type));
+    return m;
+  }, [syncQueue]);
+
   const sections = useMemo(() => {
+    if (!isOnline && syncQueue.length > 0) {
+      const pending = filteredIssues.filter(i => queueMap.has(i.id));
+      const cached = filteredIssues.filter(i => !queueMap.has(i.id));
+      const result: { title: string; data: Issue[] }[] = [];
+      if (pending.length > 0) result.push({ title: `PENDING SYNC · ${pending.length}`, data: pending });
+      if (cached.length > 0) result.push({ title: 'CACHED', data: cached });
+      return result;
+    }
     const todayItems = filteredIssues.filter(i => isToday(i.createdAt));
     const earlierItems = filteredIssues.filter(i => !isToday(i.createdAt));
     const result: { title: string; data: Issue[] }[] = [];
     if (todayItems.length > 0) result.push({ title: 'TODAY', data: todayItems });
     if (earlierItems.length > 0) result.push({ title: 'EARLIER', data: earlierItems });
     return result;
-  }, [filteredIssues]);
+  }, [filteredIssues, isOnline, syncQueue, queueMap]);
 
   const hasActiveFilters =
     filters.search !== '' ||
@@ -251,7 +267,11 @@ const IssueListScreen = () => {
             </Text>
           )}
           renderItem={({ item }) => (
-            <IssueCard issue={item} onPress={() => navigateToDetail(item.id)} />
+            <IssueCard
+              issue={item}
+              onPress={() => navigateToDetail(item.id)}
+              queueType={queueMap.get(item.id)}
+            />
           )}
           ListEmptyComponent={
             hasActiveFilters ? (

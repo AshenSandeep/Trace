@@ -8,12 +8,13 @@ import { Avatar } from '../common/Avatar';
 interface IssueCardProps {
   issue: Issue;
   onPress: () => void;
+  queueType?: 'create' | 'update';
 }
 
 const formatCardDate = (iso: string): string =>
   new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-export const IssueCard: React.FC<IssueCardProps> = ({ issue, onPress }) => {
+export const IssueCard: React.FC<IssueCardProps> = ({ issue, onPress, queueType }) => {
   const { colors } = useTheme();
 
   return (
@@ -22,14 +23,26 @@ export const IssueCard: React.FC<IssueCardProps> = ({ issue, onPress }) => {
       onPress={onPress}
       activeOpacity={0.85}
     >
-      {/* Row 1: ID · Priority · Date */}
+      {/* Row 1: ID · (QueueChip | Priority) · spacer · (dot | Date) */}
       <View style={styles.topRow}>
         <Text style={[styles.issueId, { color: colors.textTertiary }]}>{issue.id}</Text>
-        <Badge priority={issue.priority} />
+        {queueType ? (
+          <View style={styles.queueChip}>
+            <Text style={styles.queueChipText}>
+              Queued · {queueType === 'create' ? 'Create' : 'Edit'}
+            </Text>
+          </View>
+        ) : (
+          <Badge priority={issue.priority} />
+        )}
         <View style={styles.spacer} />
-        <Text style={[styles.date, { color: colors.textTertiary }]}>
-          {formatCardDate(issue.createdAt)}
-        </Text>
+        {queueType ? (
+          <View style={styles.queueDot} />
+        ) : (
+          <Text style={[styles.date, { color: colors.textTertiary }]}>
+            {formatCardDate(issue.createdAt)}
+          </Text>
+        )}
       </View>
 
       {/* Row 2: Title */}
@@ -108,5 +121,22 @@ const styles = StyleSheet.create({
   },
   unassigned: {
     fontSize: 13,
+  },
+  queueChip: {
+    backgroundColor: '#FEF3C7',
+    borderRadius: 10,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+  },
+  queueChipText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#92400E',
+  },
+  queueDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#F59E0B',
   },
 });

@@ -209,8 +209,8 @@ export const useIssueStore = create<IssueStore>((set, get) => ({
   },
 
   processSyncQueue: async () => {
-    const { syncQueue } = get();
-    if (syncQueue.length === 0) return;
+    const { isOnline, syncQueue } = get();
+    if (!isOnline || syncQueue.length === 0) return;
 
     const remaining: SyncQueueItem[] = [];
     for (const item of syncQueue) {
