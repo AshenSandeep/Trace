@@ -12,12 +12,12 @@ const AVATAR_COLORS = [
   '#6366F1',
 ];
 
-const SIZE_MAP = { sm: 24, md: 32, lg: 40 };
-const FONT_MAP = { sm: 9, md: 12, lg: 15 };
+const SIZE_MAP = { sm: 24, md: 32, lg: 40, xl: 64 };
+const FONT_MAP = { sm: 9, md: 12, lg: 15, xl: 24 };
 
 interface AvatarProps {
   initials: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   color?: string;
 }
 
