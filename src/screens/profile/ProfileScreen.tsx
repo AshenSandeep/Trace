@@ -6,13 +6,16 @@ import {
   ScrollView,
   Alert,
   ActionSheetIOS,
+  Share,
   Platform,
   StyleSheet,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme, ThemeMode } from '../../theme';
 import { useAuthStore } from '../../store/authStore';
+import { useIssueStore } from '../../store/issueStore';
 import { Avatar } from '../../components/common/Avatar';
+import { exportToJSON, exportToCSV } from '../../utils/exportUtils';
 
 const THEME_LABELS: Record<ThemeMode, string> = {
   light: 'Light',
@@ -26,6 +29,7 @@ const ProfileScreen = () => {
   const { colors, typography, spacing, themeMode, setThemeMode } = useTheme();
   const insets = useSafeAreaInsets();
   const { user, logout } = useAuthStore();
+  const filteredIssues = useIssueStore(s => s.filteredIssues);
 
   const handleAppearance = () => {
     if (Platform.OS === 'ios') {
@@ -59,6 +63,39 @@ const ProfileScreen = () => {
         { text: 'Sign out', style: 'destructive', onPress: logout },
       ],
     );
+  };
+
+  const doExport = async (format: 'json' | 'csv') => {
+    const content = format === 'json'
+      ? exportToJSON(filteredIssues)
+      : exportToCSV(filteredIssues);
+    const title = `Trace Issues Export.${format.toUpperCase()}`;
+    try {
+      await Share.share({ message: content, title });
+    } catch {
+      Alert.alert('Export failed', 'Could not open the share sheet. Please try again.');
+    }
+  };
+
+  const handleExport = () => {
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['Cancel', 'Export as JSON', 'Export as CSV'],
+          cancelButtonIndex: 0,
+        },
+        (index) => {
+          if (index === 1) doExport('json');
+          if (index === 2) doExport('csv');
+        },
+      );
+    } else {
+      Alert.alert('Export issues', `Exporting ${filteredIssues.length} issue${filteredIssues.length !== 1 ? 's' : ''}`, [
+        { text: 'Export as JSON', onPress: () => doExport('json') },
+        { text: 'Export as CSV', onPress: () => doExport('csv') },
+        { text: 'Cancel', style: 'cancel' },
+      ]);
+    }
   };
 
   return (
@@ -103,7 +140,7 @@ const ProfileScreen = () => {
           <SettingRow
             label="Export issues"
             colors={colors}
-            onPress={() => Alert.alert('Coming soon', 'Export will be available in the next update.')}
+            onPress={handleExport}
             divider
           />
           <SettingRow
