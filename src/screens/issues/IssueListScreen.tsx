@@ -276,6 +276,7 @@ const IssueListScreen = () => {
           ListEmptyComponent={
             hasActiveFilters ? (
               <EmptyState
+                icon="🔍"
                 title="No matching issues"
                 subtitle="Try removing a filter, or create a new issue with this title."
                 actionLabel="Clear filters"
@@ -285,6 +286,7 @@ const IssueListScreen = () => {
               />
             ) : (
               <EmptyState
+                icon="📋"
                 title="No issues yet"
                 subtitle="Create your first issue to start tracking work."
                 secondaryActionLabel="+ New issue"

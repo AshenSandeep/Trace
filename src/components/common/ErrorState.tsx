@@ -6,9 +6,10 @@ import { Button } from './Button';
 interface ErrorStateProps {
   message: string;
   onRetry: () => void;
+  retryLabel?: string;
 }
 
-export const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry }) => {
+export const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry, retryLabel }) => {
   const { colors } = useTheme();
 
   return (
@@ -22,7 +23,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry }) => {
 
       <Button
         variant="secondary"
-        label="Try again"
+        label={retryLabel ?? 'Try again'}
         onPress={onRetry}
         style={styles.btn}
       />

@@ -91,6 +91,7 @@ const IssueDetailScreen = ({ route, navigation }: Props) => {
       <ErrorState
         message={`Issue ${issueId} could not be found.`}
         onRetry={() => navigation.goBack()}
+        retryLabel="Go back"
       />
     );
   }

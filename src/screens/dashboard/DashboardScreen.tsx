@@ -125,6 +125,9 @@ const DashboardScreen = () => {
         {error && !isLoading && (
           <View style={styles.errorBanner}>
             <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity onPress={fetchIssues} style={styles.retryLink}>
+              <Text style={styles.retryLinkText}>Try again</Text>
+            </TouchableOpacity>
           </View>
         )}
 
@@ -283,10 +286,23 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   errorText: {
     color: '#991B1B',
     fontSize: 14,
+    flex: 1,
+  },
+  retryLink: {
+    marginLeft: 12,
+  },
+  retryLinkText: {
+    color: '#991B1B',
+    fontSize: 14,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
   statsGrid: {
     gap: 10,

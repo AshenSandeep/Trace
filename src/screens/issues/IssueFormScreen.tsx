@@ -108,6 +108,8 @@ const IssueFormScreen = ({ route, navigation }: Props) => {
         });
       }
       navigation.goBack();
+    } catch {
+      Alert.alert('Failed to save', 'Something went wrong. Please try again.');
     } finally {
       setIsSaving(false);
     }
