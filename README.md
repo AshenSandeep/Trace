@@ -1,97 +1,94 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Trace Mobile Issue Tracker
 
-# Getting Started
+Track issues, ship fixes. Keep momentum.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+A fully offline-capable issue tracker built with React Native CLI and TypeScript.
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Prerequisites
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+| Tool | Version |
+|------|---------|
+| Node.js | 18+ |
+| JDK | 17 |
+| React Native CLI | latest |
+| Android Studio + Android SDK | latest |
+| Xcode (iOS / macOS only) | 14+ |
 
-```sh
-# Using npm
-npm start
+## Install
 
-# OR using Yarn
-yarn start
+```bash
+git clone https://github.com/AshenSandeep/Trace.git
+cd Trace
+npm install
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+**iOS only:**
+```bash
+cd ios && pod install && cd ..
 ```
 
-### iOS
+## Run
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+```bash
+# Android
+npx react-native run-android
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+# iOS
+npx react-native run-ios
 ```
 
-Then, and every time you update your native dependencies, run:
+## Test
 
-```sh
-bundle exec pod install
+```bash
+npm test
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+---
 
-```sh
-# Using npm
-npm run ios
+## Architecture
 
-# OR using Yarn
-yarn ios
+```
+src/
+├── api/          Axios client + mock API functions (800 ms simulated delay)
+├── components/   Reusable UI — common/, dashboard/, issues/
+├── navigation/   RootNavigator (auth/main switch) + MainNavigator (bottom tabs)
+├── screens/      auth/, dashboard/, issues/, profile/
+├── store/        Zustand stores — authStore, issueStore
+├── theme/        Light/dark palette, typography, spacing, useTheme() hook
+├── types/        Shared TypeScript interfaces
+└── utils/        Date formatting, ID generation, JSON/CSV export
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+**State management:** Zustand with AsyncStorage persistence. Two stores:
+- `authStore` — session, login, logout, session restore on launch
+- `issueStore` — issues CRUD, filter state, sync queue, online/offline flag
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+**Navigation:** React Navigation v7 — typed auth stack → bottom tab navigator → issues native stack (list → detail → form modal).
 
-## Step 3: Modify your app
+**Theme:** `ThemeContext` wraps the app and supplies `colors`, `typography`, and `spacing`. Auto-switches on system colour scheme; manual override (Light / Dark / System) saved to AsyncStorage.
 
-Now that you have successfully run the app, let's make changes!
+**Offline-first:** `NetInfo` detects connectivity. Mutations while offline are pushed to an in-memory + persisted `syncQueue`. When the device comes back online, `processSyncQueue` drains the queue automatically.
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+---
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+## Assumptions
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+- Authentication is mocked. Any email containing `@` and a password of 6+ characters will succeed. The logged-in user is always "Alex" (`MOCK_USERS[3]`).
+- The Axios base URL (`https://api.trace.mock`) is intentionally non-functional. All network calls are intercepted by mock functions that return hardcoded data after a simulated delay.
+- Issue IDs (`ISS-200` – `ISS-214`) are generated locally and are not coordinated with any backend.
+- Attachment upload is not implemented. The UI entry point is present in the issue form and shows a "Coming soon" alert.
 
-## Congratulations! :tada:
+---
 
-You've successfully run and modified your React Native App. :partying_face:
+## Screens
 
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+| Screen | Route |
+|--------|-------|
+| Sign In | `AuthStack > SignIn` |
+| Dashboard | `MainTabs > DashboardTab` |
+| Issue List | `MainTabs > IssuesTab > IssueList` |
+| Issue Detail | `MainTabs > IssuesTab > IssueDetail` |
+| Create / Edit Issue | `MainTabs > IssuesTab > IssueForm` (modal) |
+| Profile | `MainTabs > ProfileTab` |

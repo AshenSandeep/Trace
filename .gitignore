@@ -73,3 +73,9 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+
+TRACE_IMPLEMENTATION_PLAN.md
+
+# Ignore design directory
+src/design/
