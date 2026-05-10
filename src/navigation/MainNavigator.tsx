@@ -1,10 +1,18 @@
 import React from 'react';
-import { Platform, View } from 'react-native';
+import { Platform, View, Image } from 'react-native';
 import { OfflineBanner } from '../components/common/OfflineBanner';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../theme';
+
+const TAB_ICONS = {
+  home:           require('../icons/home.png'),
+  home_outline:   require('../icons/home_outline.png'),
+  issues:         require('../icons/issues.png'),
+  issues_outline: require('../icons/issues_outline.png'),
+  person:         require('../icons/person.png'),
+  person_outline: require('../icons/person_outline.png'),
+};
 import { MainTabParamList, IssuesStackParamList } from './types';
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
 import IssueListScreen from '../screens/issues/IssueListScreen';
@@ -76,16 +84,16 @@ const MainNavigator = () => {
           fontSize: 11,
           fontWeight: '500',
         },
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName: string;
+        tabBarIcon: ({ focused, color }) => {
+          let source;
           if (route.name === 'DashboardTab') {
-            iconName = focused ? 'home' : 'home-outline';
+            source = focused ? TAB_ICONS.home : TAB_ICONS.home_outline;
           } else if (route.name === 'IssuesTab') {
-            iconName = focused ? 'list' : 'list-outline';
+            source = focused ? TAB_ICONS.issues : TAB_ICONS.issues_outline;
           } else {
-            iconName = focused ? 'person' : 'person-outline';
+            source = focused ? TAB_ICONS.person : TAB_ICONS.person_outline;
           }
-          return <Icon name={iconName} size={22} color={color} />;
+          return <Image source={source} style={{ width: 24, height: 24, tintColor: color }} />;
         },
       })}
     >
