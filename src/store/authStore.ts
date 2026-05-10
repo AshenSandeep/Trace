@@ -24,12 +24,13 @@ export const useAuthStore = create<AuthStore>((set) => ({
   login: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
-      if (!email.includes('@')) throw new Error('Please enter a valid email address.');
-      if (password.length < 6) throw new Error('Password must be at least 6 characters.');
+      if (email !== 'ashen@gmail.com' || password !== '123456') {
+        throw new Error('Invalid email or password.');
+      }
 
       await new Promise<void>(resolve => setTimeout(resolve, 800));
 
-      const user = MOCK_USERS[3]; // Alex — the logged-in user
+      const user = MOCK_USERS[3];
       await AsyncStorage.setItem(AUTH_KEY, JSON.stringify(user));
       set({ isAuthenticated: true, user, isLoading: false, error: null });
     } catch (e: any) {
